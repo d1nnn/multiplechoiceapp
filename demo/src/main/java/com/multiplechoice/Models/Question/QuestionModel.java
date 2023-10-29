@@ -13,23 +13,6 @@ import java.util.ArrayList;
 
 public class QuestionModel {
     private static final IRepository repo = RepositoriesFactory.createRepositoryInstance(SqlServerRepository.class);
-    public static ArrayList<Question> getAllQuestionsFromExam(String examId) throws SQLException, ClassNotFoundException {
-
-        String getAllQuery = "SELECT questionbank.idquestion, questionbank.contentquestions as q_title, questionoption.title as o_title, questionoption.isCorrect" +
-                " FROM questionbank, questionoption" +
-                " WHERE questionoption.idquestion = question.idquestion";
-
-        String getAllQuestionsFromexamIdQuery = String.format(
-                "SELECT exam.idexam, exam.nameexam as exam_title, questionbank.idquestion, questionbank.contentquestions as qu_title, questionoption.title as o_title, questionoption.isCorrect" +
-                        " FROM exam, questionbank,questionoption" +
-                        " WHERE question.quiz_id = '%s' AND question.question_id = [option].question_id AND question.quiz_id = quiz.quiz_id",
-                examId.trim()
-        );
-        ResultSet rs = repo.ExecuteQuery(getAllQuestionsFromexamIdQuery);
-        return getAllQuestionFromResult(rs);
-    }
-
-
     public static void delete(String id ) throws SQLException, ClassNotFoundException {
         id = id.replaceAll("[^a-zA-Z0-9]", "");
         String addQuestionQuery = String.format("delete from  QuestionBank where IDQUESTION ='%s'",
@@ -93,7 +76,7 @@ public class QuestionModel {
         }
         return questionList;
     }
-    public static ArrayList<Question> getAllQuestionsFromExam2(Exam exam) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Question> getAllQuestionsFromExam(Exam exam) throws SQLException, ClassNotFoundException {
         ArrayList<Question> questionList = new ArrayList<>();
         exam.setIdexam(exam.getIdexam().replaceAll("[^a-zA-Z0-9]", ""));
 
@@ -120,13 +103,6 @@ public class QuestionModel {
     }
 
 
-    public static Question get(int Id) throws SQLException, ClassNotFoundException {
-        String getQuestionQuery = "SELECT question.question_id, question.title as q_title, [option].title as o_title, [option].isCorrect " +
-                " FROM question,[option]" +
-                " WHERE question.question_id = " + Id;
-        ResultSet rs = repo.ExecuteQuery(getQuestionQuery);
-        return getQuestionFromResultSet(rs);
-    }
 
     public static ArrayList<Question> getQuestionsFromChapter(Chapter chapter, int numberOfQuestions) throws Exception {
         ArrayList<Question> questionList = new ArrayList<>();
@@ -181,89 +157,6 @@ public class QuestionModel {
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Error happened in QuestionModel trying to get OptionsFromQuestion: " + e);
         }
-
-
         return options;
-    }
-
-    public static void add(Question obj) throws SQLException, ClassNotFoundException {
-        String addQuestionQuery = String.format("INSERT INTO Question(title, quiz_id) VALUES ('%s', %d)", obj.getTitle(), obj);
-
-        repo.ExecuteUpdateQuery(addQuestionQuery);
-        for(Option opt : obj.getOptions()) {
-            String addQuestionOptionQuery = String.format("INSERT INTO Option(title, isCorrect, question_id) VALUES(" +
-                    "'%s', %b, '%s')",
-                    opt.getTitle(), opt.getIsCorrect(), obj.getId());
-            repo.ExecuteUpdateQuery(addQuestionOptionQuery);
-        }
-    }
-
-    public static void update(Question obj) throws SQLException, ClassNotFoundException {
-        String updateQuestion = String.format(
-                "UPDATE Question" +
-                "SET title = '%s', image_url = '%s'", obj.getTitle(), obj.getImage());
-
-        repo.ExecuteUpdateQuery(updateQuestion);
-
-        for(Option opt : obj.getOptions()) {
-            String updateQuestionOption = String.format(
-                    "UPDATE Option" +
-                    "SET title = '%s', isCorrect = %b", opt.getTitle(), opt.getIsCorrect());
-            repo.ExecuteUpdateQuery(updateQuestionOption);
-        }
-    }
-
-    public static void delete(int Id) throws SQLException, ClassNotFoundException {
-        String deleteQuestion = String.format("DELETE FROM Question WHERE question_id = %d", Id);
-
-        repo.ExecuteUpdateQuery(deleteQuestion);
-    }
-
-
-    private static ArrayList<Question> getAllQuestionFromResult(ResultSet rs) throws SQLException {
-        ArrayList<Question> list = new ArrayList<>();
-        Question q = new Question();
-        Exam exam = new Exam();
-        int index = 0;
-        while(rs.next()) {
-            exam.setIdexam(rs.getString("idexam"));
-            exam.setNameexam(rs.getString("exam_title"));
-            q.setId(rs.getString("question_id"));
-            q.setTitle(rs.getString("qu_title"));
-            q.setExam(exam);
-
-            Option opt = new Option();
-            opt.setTitle(rs.getString("o_title"));
-            opt.setIsCorrect(rs.getBoolean("isCorrect"));
-            q.setOptionAt(index, opt);
-
-            index++;
-            if(index > 3) {
-                index = 0;
-                list.add(q);
-                q = new Question();
-            }
-        }
-        return list;
-    }
-
-
-    private static Question getQuestionFromResultSet(ResultSet rs) throws SQLException {
-        Question q = new Question();
-        int index = 0;
-        while(rs.next()) {
-            q.setId(rs.getString("question_id"));
-            q.setTitle(rs.getString("q_title"));
-
-            Option opt = new Option();
-            opt.setIsCorrect(rs.getBoolean("isCorrect"));
-            opt.setTitle(rs.getString("o_title"));
-            if(index > 3)
-                index = 0;
-            q.setOptionAt(index, opt);
-            index++;
-        }
-
-        return q;
     }
 }

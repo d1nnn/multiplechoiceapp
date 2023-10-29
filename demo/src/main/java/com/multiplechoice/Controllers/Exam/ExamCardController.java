@@ -74,7 +74,7 @@ public class ExamCardController implements Initializable {
             Scene scene = new Scene(root);
 
             try {
-                ArrayList<Question> questions = QuestionModel.getAllQuestionsFromExam2(currentExam);
+                ArrayList<Question> questions = QuestionModel.getAllQuestionsFromExam(currentExam);
                 ExamQuestionController qqController = loader.getController();
                 qqController.setQuestions(questions);
                 qqController.setExamTitle(currentExam);

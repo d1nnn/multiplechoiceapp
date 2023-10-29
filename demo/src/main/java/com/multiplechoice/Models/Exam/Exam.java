@@ -7,32 +7,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Exam {
-//    private int exam_id;
-//    private String title;
-//
-//    public Exam(String title) {
-//        this.title = title;
-//    }
-//
-//    public Exam() {
-//    }
-//
-//    public int getId() {
-//        return this.exam_id;
-//    }
-//
-//    public void setId(int id) {
-//        this.exam_id = id;
-//    }
-//
-//    public String getTitle() {
-//        return this.title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-
     private String idexam;
     private String nameexam;
     private String quantity;

@@ -10,8 +10,6 @@ import com.multiplechoice.Models.Question.QuestionModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExamModel {
     private final static IRepository repo = RepositoriesFactory.createRepositoryInstance(SqlServerRepository.class);
@@ -37,52 +35,14 @@ public class ExamModel {
 
 
         for(Exam exam : examList) {
-            exam.setQuestionList(QuestionModel.getAllQuestionsFromExam2(exam));
+            exam.setQuestionList(QuestionModel.getAllQuestionsFromExam(exam));
         }
 
         return examList;
     }
 
-    public static Map<Exam, Integer> getAllExamWithQuestionCount() {
-        Map<Exam, Integer> examMap = new HashMap<>();
-        Exam mapKey = null;
-        String query = "SELECT quiz.quiz_id, quiz.title, COUNT(*) as question_count " +
-                "FROM quiz, question " +
-                "WHERE quiz.quiz_id = question.quiz_id " +
-                "GROUP BY quiz.quiz_id, quiz.title";
-        ArrayList<Exam> examList = new ArrayList<>();
-        try {
-            ResultSet rs = repo.ExecuteQuery(query);
-            while (rs.next()) {
-                Exam tempExam = new Exam();
-                tempExam.setIdexam(rs.getString("quiz_id"));
-                tempExam.setNameexam(rs.getString("title"));
-
-                examMap.put(tempExam, rs.getInt("question_count"));
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Error occurred in ExamModel getAllExamWithQuestionCount: " + e.getMessage());
-        }
-        return examMap;
-    }
 
 
-    private static ArrayList<Exam> getAllExamFromResultSet(ResultSet rs) {
-        ArrayList<Exam> examList = new ArrayList<>();
-        while (true) {
-            try {
-                if (!rs.next()) break;
-                Exam q = new Exam();
-                q.setIdexam(rs.getString("quiz_id"));
-                q.setNameexam(rs.getString("title"));
-                examList.add(q);
-            } catch (SQLException e) {
-                System.out.println("Error trying to get all exam from result set: " + e.getMessage());
-            }
-
-        }
-        return examList;
-    }
 
     public static ArrayList<Chapter> getChapterFromSemester(String hocKy) {
         String sql = String.format("select * from chapter where idSemester='%s'", hocKy);
@@ -107,11 +67,7 @@ public class ExamModel {
                 exam.getIdSubExam(),exam.getNameexam(), exam.getQuantity(), exam.getTime(), exam.getIdSemester()
         );
 
-//        try {
             repo.ExecuteUpdateQuery(examQuery);
-//        } catch (SQLException | ClassNotFoundException e) {
-//            System.out.println("Can't insert exam into Exam: " + e);
-//        }
 
         for (Chapter ch : exam.getExamMap().keySet())
             for(Question q : exam.getExamMap().get(ch)) {
