@@ -4,7 +4,12 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.swing.event.ListSelectionEvent;
+
+import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
 
 import com.multiplechoice.Models.Chapter.Chapter;
 import com.multiplechoice.Models.Exam.ExamModel;
@@ -15,6 +20,7 @@ import com.multiplechoice.Models.Question.QuestionModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -70,7 +76,7 @@ public class QuestionEditController implements Initializable {
         }
         return true;
     }
-    public void clickAddQuestion() {
+    public void clickAddQuestion() throws Exception {
         alert.setHeaderText("Thông báo");
         if(!checkInput()) {
             alert.setContentText("Điền đầy đủ thông tin vào Nội dung và các ô Lựa chọn");
@@ -79,7 +85,12 @@ public class QuestionEditController implements Initializable {
         }
         try {
             ArrayList<String> options = new ArrayList<>(Arrays.asList(txfA.getText(), txfB.getText(), txfC.getText(), txfD.getText()));
+            
+            
             QuestionModel.add(txfIdQuestion.getText(),txtIdChapter.getText(), txaContent.getText(), options);
+            
+            tblQuestion.setItems(FXCollections.observableArrayList(QuestionModel.getAllQuestionsFromChapter(txtIdChapter.getText())));
+            tblQuestion.refresh();
             alert.setContentText("Thêm câu hỏi vào ngân hàng đề thành công!");
             alert.showAndWait();
         } catch (ClassNotFoundException | SQLException e) {
@@ -98,6 +109,10 @@ public class QuestionEditController implements Initializable {
         try {
             if (delAlert.showAndWait().get() == ButtonType.OK) {
                 QuestionModel.delete(txfIdQuestion.getText());
+                FilteredList<Question> filteredList =  tblQuestion.getItems().filtered(q -> !q.getId().equals(txfIdQuestion.getText()));
+
+                tblQuestion.setItems(filteredList);
+                tblQuestion.refresh();
                 alert.setContentText("Xóa câu hỏi khỏi ngân hàng đề thành công!");
                 alert.showAndWait();
                 txfA.clear();

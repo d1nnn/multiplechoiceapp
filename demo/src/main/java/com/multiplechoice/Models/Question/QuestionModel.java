@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public class QuestionModel {
     private static final IRepository repo = RepositoriesFactory.createRepositoryInstance(SqlServerRepository.class);
+    
+    
     public static void delete(String id ) throws SQLException, ClassNotFoundException {
         id = id.replaceAll("[^a-zA-Z0-9]", "");
         String addQuestionQuery = String.format("delete from  QuestionBank where IDQUESTION ='%s'",
