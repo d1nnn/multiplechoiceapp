@@ -4,6 +4,7 @@ import com.multiplechoice.Utils.AppHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class AppTN extends Application {
@@ -14,6 +15,8 @@ public class AppTN extends Application {
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Home/HomeTeacher.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
+        stage.setTitle("Ứng dụng quản lý trắc nghiệm");
+        stage.getIcons().add(new Image("/Images/math.jpg"));
         stage.show();
         AppHandler.addCloseAppEvent(stage);
     }
