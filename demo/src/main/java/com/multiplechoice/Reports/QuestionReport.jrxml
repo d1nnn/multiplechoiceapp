@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="QuestionReport" columnCount="4" printOrder="Horizontal" pageWidth="595" pageHeight="300" columnWidth="138" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="53064b9b-1fe5-4c22-adb4-6d11e7a98bc7">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="title" class="java.lang.String"/>
+	<variable name="CharString" class="java.lang.String">
+		<variableExpression><![CDATA["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="0" y="-10" width="140" height="40" uuid="8869c6f8-ec2a-4a8b-84d3-dcf06ef090b4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="73ea1b8f-5e4a-42ad-a32c-c2c9dbdb4181"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[ $F{title}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
